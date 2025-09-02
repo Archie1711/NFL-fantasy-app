@@ -4,10 +4,6 @@
 #include <string.h>
 #include "player.h"
 
-/* Učitavanje igrača iz tekstualne datoteke (npr. players.txt)
-   Format retka: ID Name Position Rating $Price Team
-   Primjer: 1 Kyler_Murray QB 80 $14 ARZ
-*/
 Player* loadPlayersFromFile(const char* filename, int* playerCount) {
     FILE* file = fopen(filename, "r");
     if (!file) {
@@ -15,10 +11,10 @@ Player* loadPlayersFromFile(const char* filename, int* playerCount) {
         return NULL;
     }
 
-    // === NOVO: koristimo fseek, ftell i rewind ===
+    
     if (fseek(file, 0, SEEK_END) == 0) {
-        long fileSize = ftell(file);  // veličina datoteke u bajtovima
-        rewind(file);                // vraćamo se na početak za čitanje
+        long fileSize = ftell(file);  // velicina datoteke u bajtovima
+        rewind(file);                // vraca se na pocetak za citanje
         if (fileSize == 0) {
             printf("Warning: '%s' is empty. No players loaded.\n", filename);
         }
@@ -60,7 +56,7 @@ Player* loadPlayersFromFile(const char* filename, int* playerCount) {
                                                  : atoi(priceWithDollar);
             players[(*playerCount)++] = p;
         } else {
-            // preskoči do kraja reda ako je linija neispravna
+            // preskoci do kraja reda ako je linija neispravna
             int ch;
             while ((ch = fgetc(file)) != '\n' && ch != EOF) {}
         }
@@ -70,7 +66,7 @@ Player* loadPlayersFromFile(const char* filename, int* playerCount) {
     return players;
 }
 
-/* Ispis svih igrača */
+/* Ispis svih igraca */
 void showAllPlayers(Player* players, int count) {
     printf("\n%-4s %-20s %-4s %-6s %-6s %-4s\n",
            "ID", "Name", "Pos", "Rating", "Price", "Team");
@@ -82,7 +78,7 @@ void showAllPlayers(Player* players, int count) {
     }
 }
 
-/* ======================= POMOĆNE – qsort/bsearch ======================= */
+/* ======================= qsort/bsearch ======================= */
 static int cmp_rating_desc(const void* a, const void* b) {
     const Player* x = (const Player*)a, * y = (const Player*)b;
     return (y->rating - x->rating);
@@ -118,7 +114,7 @@ void sort_players_by_name(Player* arr, int n) {
     qsort(arr, n, sizeof(Player), cmp_name_asc);
 }
 
-/* bsearch – sortira po ID pa traži (mutira poredak niza!) */
+
 Player* find_player_by_id(Player* arr, int n, int id) {
     if (!arr || n <= 0) return NULL;
     qsort(arr, n, sizeof(Player), cmp_id_asc);
@@ -207,3 +203,4 @@ int delete_player(const char* filename, Player** players, int* count, int id) {
     if (rewrite_players_file(filename, *players, *count) != 0) return -1;
     return 0;
 }
+
