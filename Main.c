@@ -56,10 +56,7 @@ static void browsePlayersMenu(Player* arr, int n) {
             for (int i = 0, j = n - 1; i < j; ++i, --j) { Player tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp; }
             break;
         case 7: /* ID ASC */
-            /* koristimo find_player_by_id (koji sortira po ID ASC), ali ovdje trebamo samo sortiranje:
-               napravimo mali qsort komparator unutar player.c? Ne treba – elegantno:
-               pozovi find_player_by_id s ID-om koji ne postoji da bi se niz posortirao po ID ASC,
-               a rezultat zanemari. */
+            
             (void)find_player_by_id(arr, n, -1234567);
             break;
         case 8: /* ID DESC */
@@ -177,8 +174,8 @@ static void managePlayers(void) {
         }
 
         case 4: {
-            /* UPDATE flow: prvo upiši ID koji želiš mijenjati, prikažemo stari zapis,
-               pa uneseš komplet nove vrijednosti */
+            /* UPDATE flow: prvo upis ID, prikazi stari zapis,
+               onda nove vrijednosti */
             int targetId;
             printf("UPDATE – enter ID to update: ");
             if (scanf("%d", &targetId) == 1) {
@@ -192,14 +189,14 @@ static void managePlayers(void) {
                 printf("Enter NEW (ID Name Pos Rating Price Team):\n");
                 if (scanf("%d %49s %3s %d %d %3s",
                     &up.id, up.name, up.position, &up.rating, &up.price, up.team) == 6) {
-                    /* Ako korisnik promijeni ID, sve ok – update_player traži po up.id,
+                    /* Ako korisnik promijeni ID, ok – update_player traži po up.id,
                        pa ga preusmjerimo da traži po originalnom targetId: */
                     up.id = up.id; /* želimo zapis s novim ID-om */
                     /* Implementacija: promijenimo privremeno: */
                     Player tmp = *oldp;          /* kopija starog */
-                    tmp = up;                     /* zamijenimo sadržaj */
+                    tmp = up;                     /* zamijeni sadrzaj */
                     tmp.id = up.id;               /* novi ID ostaje */
-                    /* Najlakše: pozovi delete + insert da izbjegnemo kolizije ID-a */
+                    
                     if (delete_player("players.txt", &allPlayers, &playerCount, targetId) == 0 &&
                         insert_player("players.txt", &allPlayers, &playerCount, &tmp) == 0) {
                         printf("UPDATE OK.\n");
@@ -265,3 +262,4 @@ int main() {
     allPlayers = NULL;
     return 0;
 }
+
