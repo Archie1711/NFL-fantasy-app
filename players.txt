@@ -187,5 +187,5 @@
 188 San_Francisco_49ers DEF 92 $3 SF
 189 Seattle_Seahawks DEF 90 $3 SEA
 190 Tampa_Bay_Buccaneers DEF 80 $1 TB
-191 Tennesee_Titans DEF 80 $1 TEN
+191 Tennessee_Titans DEF 80 $1 TEN
 192 Washington_Commandeers DEF 83 $1 WAS
