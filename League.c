@@ -53,24 +53,16 @@ void league_init(void) {
 
 void league_record_result(const char* manager_name, int gw, double points) {
     if (!g_initialized) league_init();
-    (void)manager_name; /* ignoriramo – uvijek je "You" */
+    (void)manager_name; /*  "You" */
 
     if (gw < 1 || gw > MAX_GAMEWEEKS) return;
 
-    /* Ako prvi put upisujemo rezultat za ovaj GW, dodaj u total */
+    /* Ako prvi put upisujes rezultat za ovaj GW, dodaj u total */
     if (!g.played_gw[gw]) {
         g.gw_points[gw] = points;
         g.played_gw[gw] = 1;
         g.total += points;
-        league_write_table_file(); /* uvijek ažuriraj file */
-    }
-    else {
-        /* Ako želiš omogućiti overwrite, otkomentiraj:
-        g.total -= g.gw_points[gw];
-        g.gw_points[gw] = points;
-        g.total += points;
-        league_write_table_file();
-        */
+        league_write_table_file(); /* uvijek azuriraj file */
     }
 }
 
