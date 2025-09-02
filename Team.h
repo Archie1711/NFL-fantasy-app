@@ -1,7 +1,7 @@
 #ifndef TEAM_H
 #define TEAM_H
 
-/* Forward declaration – izbjegne kružne include-ove */
+
 typedef struct Player Player;
 
 #define MAX_FANTASY_PLAYERS 9
@@ -29,3 +29,4 @@ extern const int MAX_GAMEWEEKS;
 const FantasyTeam* team_get_user_team(void);
 
 #endif /* TEAM_H */
+
