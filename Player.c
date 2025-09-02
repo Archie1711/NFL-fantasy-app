@@ -15,6 +15,20 @@ Player* loadPlayersFromFile(const char* filename, int* playerCount) {
         return NULL;
     }
 
+    // === NOVO: koristimo fseek, ftell i rewind ===
+    if (fseek(file, 0, SEEK_END) == 0) {
+        long fileSize = ftell(file);  // veličina datoteke u bajtovima
+        rewind(file);                // vraćamo se na početak za čitanje
+        if (fileSize == 0) {
+            printf("Warning: '%s' is empty. No players loaded.\n", filename);
+        }
+    } else {
+        perror("Failed to seek in player file");
+        fclose(file);
+        return NULL;
+    }
+    // === KRAJ NOVOG DIJELA ===
+
     int capacity = 128;
     *playerCount = 0;
     Player* players = (Player*)malloc(capacity * sizeof(Player));
@@ -39,16 +53,14 @@ Player* loadPlayersFromFile(const char* filename, int* playerCount) {
 
         Player p;
         char priceWithDollar[16];
-
         int res = fscanf(file, "%d %49s %3s %d %15s %3s",
-            &p.id, p.name, p.position, &p.rating, priceWithDollar, p.team);
+                         &p.id, p.name, p.position, &p.rating, priceWithDollar, p.team);
         if (res == 6) {
             p.price = (priceWithDollar[0] == '$') ? atoi(priceWithDollar + 1)
-                : atoi(priceWithDollar);
+                                                 : atoi(priceWithDollar);
             players[(*playerCount)++] = p;
-        }
-        else {
-            /* preskoči do kraja reda ako linija nije dobra */
+        } else {
+            // preskoči do kraja reda ako je linija neispravna
             int ch;
             while ((ch = fgetc(file)) != '\n' && ch != EOF) {}
         }
@@ -58,13 +70,15 @@ Player* loadPlayersFromFile(const char* filename, int* playerCount) {
     return players;
 }
 
+/* Ispis svih igrača */
 void showAllPlayers(Player* players, int count) {
-    printf("\n%-4s %-20s %-4s %-6s %-6s %-4s\n", "ID", "Name", "Pos", "Rating", "Price", "Team");
+    printf("\n%-4s %-20s %-4s %-6s %-6s %-4s\n",
+           "ID", "Name", "Pos", "Rating", "Price", "Team");
     printf("----------------------------------------------------------\n");
     for (int i = 0; i < count; i++) {
         printf("%-4d %-20s %-4s %-6d $%-5d %-4s\n",
-            players[i].id, players[i].name, players[i].position,
-            players[i].rating, players[i].price, players[i].team);
+               players[i].id, players[i].name, players[i].position,
+               players[i].rating, players[i].price, players[i].team);
     }
 }
 
@@ -193,4 +207,3 @@ int delete_player(const char* filename, Player** players, int* count, int id) {
     if (rewrite_players_file(filename, *players, *count) != 0) return -1;
     return 0;
 }
-
